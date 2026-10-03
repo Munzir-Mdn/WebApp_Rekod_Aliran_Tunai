@@ -1,0 +1,1696 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Rekod Aliran Tunai — Offline</title>
+
+<style>
+:root{
+  --bg:#f5f7fb;
+  --card:#fff;
+  --text:#172033;
+  --muted:#687386;
+  --line:#e5e9f0;
+  --primary:#2457d6;
+  --green:#138a5b;
+  --red:#cf3e4f;
+  --shadow:0 8px 30px rgba(31,45,61,.08)
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font:14px/1.5 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text)
+}
+
+.wrap{
+  max-width:1280px;
+  margin:auto;
+  padding:24px
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  align-items:center;
+  margin-bottom:20px
+}
+
+.top h1{
+  margin:0;
+  font-size:26px
+}
+
+.top p{
+  margin:4px 0 0;
+  color:var(--muted)
+}
+
+button,.btn{
+  border:0;
+  border-radius:10px;
+  padding:10px 14px;
+  font-weight:650;
+  cursor:pointer
+}
+
+.primary{
+  background:var(--primary);
+  color:#fff
+}
+
+.ghost{
+  background:#eef2f8;
+  color:#27344c
+}
+
+.danger{
+  background:#fff0f2;
+  color:var(--red)
+}
+
+.grid{
+  display:grid;
+  gap:16px
+}
+
+.kpis{
+  grid-template-columns:repeat(4,1fr);
+  margin-bottom:16px
+}
+
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:18px
+}
+
+.kpi small{
+  color:var(--muted);
+  font-weight:600
+}
+
+.kpi strong{
+  display:block;
+  font-size:25px;
+  margin-top:8px
+}
+
+.income{color:var(--green)}
+.expense{color:var(--red)}
+
+.main{
+  grid-template-columns:360px 1fr
+}
+
+.card h2{
+  font-size:17px;
+  margin:0 0 14px
+}
+
+.field{
+  margin-bottom:12px
+}
+
+.field label{
+  display:block;
+  font-weight:650;
+  margin-bottom:6px
+}
+
+.field input,
+.field select,
+.filters input,
+.filters select{
+  width:100%;
+  padding:10px 11px;
+  border:1px solid #d8dee8;
+  border-radius:9px;
+  background:#fff;
+  color:var(--text);
+  outline:none
+}
+
+.field input:focus,
+.field select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(36,87,214,.1)
+}
+
+.seg{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px
+}
+
+.seg label{
+  padding:10px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  text-align:center;
+  cursor:pointer
+}
+
+.seg input{
+  margin-right:6px
+}
+
+.hint{
+  font-size:12px;
+  color:var(--muted)
+}
+
+.filters{
+  display:grid;
+  grid-template-columns:1fr 150px 180px;
+  gap:10px;
+  margin-bottom:12px
+}
+
+.tablewrap{
+  overflow:auto;
+  max-height:500px;
+  border:1px solid var(--line);
+  border-radius:12px
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:760px
+}
+
+th,td{
+  padding:11px 12px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  white-space:nowrap
+}
+
+th{
+  position:sticky;
+  top:0;
+  background:#f8fafc;
+  color:#536074;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  z-index:1
+}
+
+td.note{
+  white-space:normal;
+  min-width:190px
+}
+
+.pill{
+  display:inline-block;
+  padding:4px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700
+}
+
+.pill.in{
+  background:#eaf8f2;
+  color:var(--green)
+}
+
+.pill.out{
+  background:#fff0f2;
+  color:var(--red)
+}
+
+.actions button{
+  padding:6px 8px;
+  font-size:12px
+}
+
+.dash{
+  grid-template-columns:1fr 1fr;
+  margin-top:16px
+}
+
+.barrow{
+  display:grid;
+  grid-template-columns:150px 1fr 95px;
+  gap:10px;
+  align-items:center;
+  margin:10px 0
+}
+
+.bar{
+  height:9px;
+  background:#edf0f5;
+  border-radius:99px;
+  overflow:hidden
+}
+
+.bar i{
+  display:block;
+  height:100%;
+  background:var(--primary);
+  border-radius:99px
+}
+
+.barrow b{
+  text-align:right;
+  font-size:12px
+}
+
+.monthrow{
+  display:grid;
+  grid-template-columns:72px 1fr 1fr 90px;
+  gap:8px;
+  align-items:center;
+  margin:9px 0
+}
+
+.mini{
+  height:8px;
+  background:#edf0f5;
+  border-radius:99px;
+  overflow:hidden
+}
+
+.mini i{
+  display:block;
+  height:100%;
+  border-radius:99px
+}
+
+.mini.in i{background:var(--green)}
+.mini.out i{background:var(--red)}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:32px
+}
+
+.foot{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:14px
+}
+
+.toast{
+  position:fixed;
+  right:22px;
+  bottom:22px;
+  background:#172033;
+  color:white;
+  padding:11px 14px;
+  border-radius:10px;
+  opacity:0;
+  transform:translateY(10px);
+  transition:.2s;
+  pointer-events:none
+}
+
+.toast.show{
+  opacity:1;
+  transform:none
+}
+
+@media(max-width:900px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .main,.dash{grid-template-columns:1fr}
+  .filters{grid-template-columns:1fr 1fr}
+  .filters input{grid-column:1/-1}
+}
+
+@media(max-width:560px){
+  .wrap{padding:14px}
+  .top{
+    align-items:flex-start;
+    flex-direction:column
+  }
+  .kpis{grid-template-columns:1fr}
+  .filters{grid-template-columns:1fr}
+  .filters input{grid-column:auto}
+  .barrow{grid-template-columns:110px 1fr 85px}
+  .monthrow{grid-template-columns:58px 1fr 1fr}
+  .monthrow strong{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<div class="top">
+
+<div>
+<h1>Rekod Aliran Tunai</h1>
+<p>Pendapatan & perbelanjaan harian • Disimpan secara offline dalam browser</p>
+</div>
+
+<div class="toolbar">
+
+<span id="syncStatus" class="hint">
+✓ Mod Offline • localStorage
+</span>
+
+<button class="ghost" id="exportBtn">
+Eksport CSV
+</button>
+
+<button class="ghost" id="backupBtn">
+Backup JSON
+</button>
+
+<label class="btn ghost">
+Pulih JSON
+<input
+  id="restoreFile"
+  type="file"
+  accept="application/json"
+  hidden>
+</label>
+
+</div>
+</div>
+
+
+<!-- KPI -->
+
+<div class="grid kpis">
+
+<div class="card kpi">
+<small>Jumlah Pendapatan</small>
+<strong class="income" id="kIncome">RM 0.00</strong>
+</div>
+
+<div class="card kpi">
+<small>Jumlah Perbelanjaan</small>
+<strong class="expense" id="kExpense">RM 0.00</strong>
+</div>
+
+<div class="card kpi">
+<small>Baki Bersih</small>
+<strong id="kBalance">RM 0.00</strong>
+</div>
+
+<div class="card kpi">
+<small>Bilangan Rekod</small>
+<strong id="kCount">0</strong>
+</div>
+
+</div>
+
+
+<div class="grid main">
+
+<!-- FORM -->
+
+<section class="card">
+
+<h2 id="formTitle">Tambah Rekod</h2>
+
+<form id="txForm">
+
+<input type="hidden" id="editId">
+
+<div class="field">
+
+<label>Tarikh</label>
+
+<input
+type="date"
+id="date"
+required>
+
+</div>
+
+
+<div class="field">
+
+<label>Jenis</label>
+
+<div class="seg">
+
+<label>
+<input
+type="radio"
+name="type"
+value="income"
+checked>
+Pendapatan
+</label>
+
+<label>
+<input
+type="radio"
+name="type"
+value="expense">
+Perbelanjaan
+</label>
+
+</div>
+</div>
+
+
+<div class="field">
+
+<label>Jumlah (RM)</label>
+
+<input
+type="number"
+id="amount"
+min="0.01"
+step="0.01"
+placeholder="0.00"
+required>
+
+</div>
+
+
+<!-- CATATAN -->
+
+<div class="field">
+
+<label>Catatan</label>
+
+<select id="category" required>
+
+<option value="GAJI">GAJI</option>
+
+<option value="MYTNB">MYTNB</option>
+
+<option value="MYUNIFI">MYUNIFI</option>
+
+<option value="KAD KREDIT VISA">
+KAD KREDIT VISA
+</option>
+
+<option value="KAD KREDIT MC">
+KAD KREDIT MC
+</option>
+
+<option value="PB VIOS">
+PB VIOS
+</option>
+
+<option value="HOMELOAN">
+HOMELOAN
+</option>
+
+<option value="DUIT BELANJA MYWIFE">
+DUIT BELANJA MYWIFE
+</option>
+
+<option value="AEON">
+AEON
+</option>
+
+<option value="BONUS">
+BONUS
+</option>
+
+<option value="Lain-lain">
+Lain-lain
+</option>
+
+</select>
+
+</div>
+
+
+<!-- CATATAN TAMBAHAN -->
+
+<div
+class="field"
+id="extraWrap"
+hidden>
+
+<label>Catatan tambahan</label>
+
+<input
+id="extra"
+maxlength="120"
+placeholder="Contoh: Duit raya, dividen, belanja sekolah...">
+
+<div class="hint">
+Wajib diisi apabila memilih Lain-lain.
+</div>
+
+</div>
+
+
+<button
+class="primary"
+style="width:100%"
+type="submit">
+
+Simpan Rekod
+
+</button>
+
+
+<button
+class="ghost"
+style="width:100%;margin-top:8px"
+type="button"
+id="cancelEdit"
+hidden>
+
+Batal Edit
+
+</button>
+
+</form>
+
+
+<div class="foot">
+Data disimpan dalam <b>localStorage</b> browser ini. Gunakan Backup JSON secara berkala.
+</div>
+
+</section>
+
+
+<!-- TABLE -->
+
+<section class="card">
+
+<h2>Rekod Transaksi</h2>
+
+<div class="filters">
+
+<input
+id="search"
+placeholder="Cari catatan...">
+
+<select id="monthFilter"></select>
+
+<select id="typeFilter">
+
+<option value="all">
+Semua jenis
+</option>
+
+<option value="income">
+Pendapatan
+</option>
+
+<option value="expense">
+Perbelanjaan
+</option>
+
+</select>
+
+</div>
+
+
+<div class="tablewrap">
+
+<table>
+
+<thead>
+
+<tr>
+<th>Tarikh</th>
+<th>Jenis</th>
+<th>Catatan</th>
+<th>Jumlah</th>
+<th>Tindakan</th>
+</tr>
+
+</thead>
+
+<tbody id="tbody"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div class="grid dash">
+
+<section class="card">
+
+<h2>
+Perbelanjaan Mengikut Catatan
+</h2>
+
+<div id="categoryDash"></div>
+
+</section>
+
+
+<section class="card">
+
+<h2>
+Ringkasan Bulanan
+</h2>
+
+<div id="monthDash"></div>
+
+</section>
+
+</div>
+
+</div>
+
+
+<div
+class="toast"
+id="toast">
+</div>
+
+
+<script>
+
+const $ = s =>
+document.querySelector(s);
+
+
+const money = n =>
+'RM ' +
+Number(n || 0).toLocaleString(
+'ms-MY',
+{
+minimumFractionDigits:2,
+maximumFractionDigits:2
+}
+);
+
+
+let data = [];
+
+
+/* ==============================
+   TOAST
+================================ */
+
+function toast(s){
+
+const t = $('#toast');
+
+t.textContent = s;
+
+t.classList.add('show');
+
+setTimeout(
+()=>t.classList.remove('show'),
+1800
+);
+
+}
+
+
+/* ==============================
+   CONNECTION STATUS
+================================ */
+
+function status(s,bad=false){
+
+const el = $('#syncStatus');
+
+el.textContent = s;
+
+el.style.color =
+bad
+? 'var(--red)'
+: 'var(--muted)';
+
+}
+
+
+/* ==============================
+   LOCAL STORAGE
+================================ */
+
+const STORAGE_KEY = 'rekod_aliran_tunai_v1';
+
+function persistData(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function loadData(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    data = saved ? JSON.parse(saved) : [];
+    if(!Array.isArray(data)) data = [];
+    // Normalisasi rekod lama
+    data = data.map(x => ({
+      ...x,
+      category: x.category === 'KADKREDIT MC' ? 'KAD KREDIT MC' : x.category
+    }));
+    persistData();
+    status('✓ Mod Offline • data disimpan dalam browser');
+    render();
+  }catch(e){
+    data = [];
+    status('Ralat membaca localStorage', true);
+    alert('Ralat membaca data offline: ' + (e.message || e));
+  }
+}
+
+function makeId(){
+  if(window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'tx-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+}
+
+/* ==============================
+   MONTH FILTER
+================================ */
+
+function setupMonths(){
+
+let v =
+$('#monthFilter').value || 'all';
+
+let months =
+[
+...new Set(
+data.map(
+x =>
+String(x.date).slice(0,7)
+)
+)
+]
+.sort()
+.reverse();
+
+
+$('#monthFilter').innerHTML =
+
+'<option value="all">Semua bulan</option>'
+
++
+
+months.map(
+m =>
+`
+<option value="${m}">
+${
+new Date(
+m+'-01T00:00:00'
+)
+.toLocaleDateString(
+'ms-MY',
+{
+month:'long',
+year:'numeric'
+}
+)
+}
+</option>
+`
+).join('');
+
+
+if(months.includes(v))
+$('#monthFilter').value = v;
+
+}
+
+
+/* ==============================
+   FILTER DATA
+================================ */
+
+function filtered(){
+
+let q =
+$('#search')
+.value
+.toLowerCase();
+
+let m =
+$('#monthFilter').value;
+
+let t =
+$('#typeFilter').value;
+
+
+return data.filter(
+x =>
+
+(m === 'all' ||
+String(x.date).startsWith(m))
+
+&&
+
+(t === 'all' ||
+x.type === t)
+
+&&
+
+(
+`${x.category} ${x.extra || ''}`
+.toLowerCase()
+.includes(q)
+)
+
+);
+
+}
+
+
+/* ==============================
+   RENDER DASHBOARD
+================================ */
+
+function render(){
+
+setupMonths();
+
+
+let inc =
+data
+.filter(
+x => x.type === 'income'
+)
+.reduce(
+(a,b) =>
+a + Number(b.amount),
+0
+);
+
+
+let exp =
+data
+.filter(
+x => x.type === 'expense'
+)
+.reduce(
+(a,b) =>
+a + Number(b.amount),
+0
+);
+
+
+$('#kIncome').textContent =
+money(inc);
+
+$('#kExpense').textContent =
+money(exp);
+
+$('#kBalance').textContent =
+money(inc-exp);
+
+$('#kBalance').className =
+inc-exp >= 0
+? 'income'
+: 'expense';
+
+$('#kCount').textContent =
+data.length;
+
+
+let rows =
+filtered()
+.sort(
+(a,b) =>
+String(b.date)
+.localeCompare(
+String(a.date)
+)
+);
+
+
+$('#tbody').innerHTML =
+
+rows.length
+
+?
+
+rows.map(
+x =>
+
+`
+<tr>
+
+<td>
+${
+new Date(
+x.date+'T00:00:00'
+)
+.toLocaleDateString(
+'ms-MY'
+)
+}
+</td>
+
+
+<td>
+
+<span
+class="pill ${
+x.type === 'income'
+? 'in'
+: 'out'
+}">
+
+${
+x.type === 'income'
+? 'Pendapatan'
+: 'Perbelanjaan'
+}
+
+</span>
+
+</td>
+
+
+<td class="note">
+
+<b>
+${esc(x.category)}
+</b>
+
+${
+x.extra
+?
+`
+<br>
+<span class="hint">
+${esc(x.extra)}
+</span>
+`
+:
+''
+}
+
+</td>
+
+
+<td
+class="${
+x.type === 'income'
+? 'income'
+: 'expense'
+}">
+
+<b>
+${money(x.amount)}
+</b>
+
+</td>
+
+
+<td class="actions">
+
+<button
+class="ghost"
+onclick="editTx('${x.id}')">
+
+Edit
+
+</button>
+
+<button
+class="danger"
+onclick="delTx('${x.id}')">
+
+Padam
+
+</button>
+
+</td>
+
+</tr>
+`
+
+).join('')
+
+:
+
+`
+<tr>
+<td
+colspan="5"
+class="empty">
+
+Tiada rekod dijumpai.
+
+</td>
+</tr>
+`;
+
+
+renderDash();
+
+}
+
+
+/* ==============================
+   CATEGORY DASHBOARD
+================================ */
+
+function renderDash(){
+
+let ex =
+data.filter(
+x =>
+x.type === 'expense'
+);
+
+
+let by = {};
+
+
+ex.forEach(
+x =>
+by[x.category] =
+(by[x.category] || 0)
++
+Number(x.amount)
+);
+
+
+let arr =
+Object.entries(by)
+.sort(
+(a,b) =>
+b[1] - a[1]
+);
+
+
+let max =
+Math.max(
+1,
+...arr.map(
+x => x[1]
+)
+);
+
+
+$('#categoryDash').innerHTML =
+
+arr.length
+
+?
+
+arr.map(
+([k,v]) =>
+
+`
+<div class="barrow">
+
+<span>
+${esc(k)}
+</span>
+
+<div class="bar">
+
+<i
+style="width:${
+v/max*100
+}%">
+</i>
+
+</div>
+
+<b>
+${money(v)}
+</b>
+
+</div>
+`
+
+).join('')
+
+:
+
+`
+<div class="empty">
+Belum ada perbelanjaan.
+</div>
+`;
+
+
+/* MONTHLY */
+
+let bm = {};
+
+
+data.forEach(
+x => {
+
+let m =
+String(x.date)
+.slice(0,7);
+
+
+bm[m] ??=
+{
+in:0,
+out:0
+};
+
+
+bm[m][
+x.type === 'income'
+? 'in'
+: 'out'
+]
++= Number(x.amount);
+
+}
+);
+
+
+let ma =
+Math.max(
+1,
+...Object.values(bm)
+.flatMap(
+x =>
+[x.in,x.out]
+)
+);
+
+
+$('#monthDash').innerHTML =
+
+Object.entries(bm)
+
+.sort(
+(a,b) =>
+b[0].localeCompare(a[0])
+)
+
+.map(
+([m,v]) =>
+
+`
+<div class="monthrow">
+
+<span>
+
+${
+new Date(
+m+'-01T00:00:00'
+)
+.toLocaleDateString(
+'ms-MY',
+{
+month:'short',
+year:'2-digit'
+}
+)
+}
+
+</span>
+
+
+<div
+class="mini in"
+title="Pendapatan ${money(v.in)}">
+
+<i
+style="width:${
+v.in/ma*100
+}%">
+</i>
+
+</div>
+
+
+<div
+class="mini out"
+title="Perbelanjaan ${money(v.out)}">
+
+<i
+style="width:${
+v.out/ma*100
+}%">
+</i>
+
+</div>
+
+
+<strong
+class="${
+v.in-v.out >= 0
+? 'income'
+: 'expense'
+}">
+
+${money(v.in-v.out)}
+
+</strong>
+
+</div>
+`
+
+).join('');
+
+}
+
+
+/* ==============================
+   ESCAPE HTML
+================================ */
+
+function esc(s=''){
+
+return String(s)
+.replace(
+/[&<>"']/g,
+c =>
+({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[c])
+);
+
+}
+
+
+/* ==============================
+   LAIN-LAIN
+================================ */
+
+$('#category')
+.addEventListener(
+'change',
+()=>{
+
+$('#extraWrap').hidden =
+$('#category').value
+!== 'Lain-lain';
+
+}
+);
+
+
+/* ==============================
+   FILTER EVENTS
+================================ */
+
+[
+'search',
+'monthFilter',
+'typeFilter'
+]
+.forEach(
+id =>
+
+$('#'+id)
+.addEventListener(
+id === 'search'
+? 'input'
+: 'change',
+render
+)
+
+);
+
+
+/* ==============================
+   SAVE TRANSACTION
+================================ */
+
+$('#txForm')
+.addEventListener(
+'submit',
+async e => {
+
+e.preventDefault();
+
+
+let cat =
+$('#category').value;
+
+
+let extra =
+$('#extra')
+.value
+.trim();
+
+
+if(
+cat === 'Lain-lain'
+&&
+!extra
+){
+
+alert(
+'Sila isi catatan tambahan untuk Lain-lain.'
+);
+
+return;
+
+}
+
+
+let obj = {
+
+id:
+$('#editId').value || '',
+
+date:
+$('#date').value,
+
+type:
+document.querySelector(
+'input[name=type]:checked'
+).value,
+
+amount:
+Number(
+$('#amount').value
+),
+
+category:
+cat,
+
+extra:
+extra
+
+};
+
+
+status('Menyimpan dalam browser...');
+
+try{
+  const wasEdit = Boolean(obj.id);
+  const now = new Date().toISOString();
+  if(obj.id){
+    const i = data.findIndex(x => x.id === obj.id);
+    if(i < 0) throw new Error('Rekod tidak dijumpai.');
+    data[i] = {...data[i], ...obj, updated: now};
+  }else{
+    obj.id = makeId();
+    obj.created = now;
+    obj.updated = now;
+    data.push(obj);
+  }
+  persistData();
+  resetForm();
+  render();
+  status('✓ Mod Offline • data disimpan dalam browser');
+  toast(wasEdit ? 'Rekod dikemas kini' : 'Rekod disimpan');
+}catch(err){
+  status('Gagal menyimpan', true);
+  alert(err.message || err);
+}
+
+}
+);
+
+
+/* ==============================
+   RESET FORM
+================================ */
+
+function resetForm(){
+
+$('#txForm').reset();
+
+$('#date').value =
+new Date()
+.toLocaleDateString(
+'en-CA'
+);
+
+$('#editId').value = '';
+
+$('#formTitle')
+.textContent =
+'Tambah Rekod';
+
+$('#cancelEdit')
+.hidden = true;
+
+$('#extraWrap')
+.hidden = true;
+
+}
+
+
+/* ==============================
+   EDIT
+================================ */
+
+window.editTx =
+id => {
+
+let x =
+data.find(
+y => y.id === id
+);
+
+if(!x)
+return;
+
+
+$('#editId').value =
+x.id;
+
+$('#date').value =
+x.date;
+
+document.querySelector(
+`input[name=type][value=${x.type}]`
+).checked = true;
+
+$('#amount').value =
+x.amount;
+
+
+/*
+Normalisasi nama lama.
+Rekod KADKREDIT MC lama
+akan dipaparkan sebagai
+KAD KREDIT MC ketika edit.
+*/
+
+let category =
+x.category === 'KADKREDIT MC'
+?
+'KAD KREDIT MC'
+:
+x.category;
+
+
+$('#category').value =
+category;
+
+
+/*
+Jika rekod lama mempunyai
+kategori yang tidak lagi berada
+dalam dropdown, gunakan
+Lain-lain dan kekalkan nama asal.
+*/
+
+if(!$('#category').value){
+
+$('#category').value =
+'Lain-lain';
+
+$('#extra').value =
+x.extra
+||
+x.category;
+
+}
+else{
+
+$('#extra').value =
+x.extra || '';
+
+}
+
+
+$('#extraWrap').hidden =
+$('#category').value
+!== 'Lain-lain';
+
+
+$('#formTitle')
+.textContent =
+'Edit Rekod';
+
+
+$('#cancelEdit')
+.hidden = false;
+
+
+scrollTo(
+{
+top:0,
+behavior:'smooth'
+}
+);
+
+};
+
+
+/* ==============================
+   DELETE
+================================ */
+
+window.delTx = id => {
+  if(!confirm('Padam rekod ini dari simpanan offline?')) return;
+  data = data.filter(x => x.id !== id);
+  persistData();
+  render();
+  status('✓ Mod Offline • data disimpan dalam browser');
+  toast('Rekod dipadam');
+};
+
+
+$('#cancelEdit')
+.onclick =
+resetForm;
+
+
+/* ==============================
+   CSV EXPORT
+================================ */
+
+$('#exportBtn')
+.onclick =
+()=>{
+
+let csv =
+
+'Tarikh,Jenis,Jumlah,Catatan,Catatan Tambahan\n'
+
++
+
+data.map(
+x =>
+[
+x.date,
+x.type,
+x.amount,
+`"${String(x.category)
+.replaceAll('"','""')}"`,
+`"${String(x.extra || '')
+.replaceAll('"','""')}"`
+]
+.join(',')
+)
+.join('\n');
+
+
+download(
+'rekod-aliran-tunai.csv',
+csv,
+'text/csv;charset=utf-8'
+);
+
+};
+
+
+/* ==============================
+   JSON BACKUP
+================================ */
+
+$('#backupBtn')
+.onclick =
+()=>
+
+download(
+'backup-aliran-tunai.json',
+JSON.stringify(
+data,
+null,
+2
+),
+'application/json'
+);
+
+
+/* ==============================
+   RESTORE JSON
+================================ */
+
+$('#restoreFile').onchange = e => {
+  const file = e.target.files && e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const imported = JSON.parse(reader.result);
+      if(!Array.isArray(imported)) throw new Error('Format backup tidak sah.');
+      if(!confirm(`Pulihkan ${imported.length} rekod? Data semasa akan digantikan.`)) return;
+      data = imported.map(x => ({
+        ...x,
+        category: x.category === 'KADKREDIT MC' ? 'KAD KREDIT MC' : x.category
+      }));
+      persistData();
+      render();
+      toast('Backup berjaya dipulihkan');
+      status('✓ Mod Offline • data disimpan dalam browser');
+    }catch(err){
+      alert('Gagal pulih JSON: ' + (err.message || err));
+    }finally{
+      e.target.value = '';
+    }
+  };
+  reader.readAsText(file);
+};
+
+
+/* ==============================
+   DOWNLOAD
+================================ */
+
+function download(n,c,t){
+
+let a =
+document.createElement('a');
+
+a.href =
+URL.createObjectURL(
+new Blob(
+[c],
+{type:t}
+)
+);
+
+a.download = n;
+
+a.click();
+
+URL.revokeObjectURL(
+a.href
+);
+
+}
+
+
+/* ==============================
+   START
+================================ */
+
+resetForm();
+
+loadData();
+
+</script>
+
+</body>
+</html>
